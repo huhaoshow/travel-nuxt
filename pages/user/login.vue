@@ -13,32 +13,31 @@
             @click="handleChangeTab(index)"
           >{{item}}</span>
         </el-row>
-
         <!-- 登录功能组件 -->
-        <!-- <LoginForm v-if="currentTab == 0"/> -->
+        <LoginForm v-if="currentTab == 0"/>
 
         <!-- 注册功能组件 -->
-        <!-- <RegisterForm v-if="currentTab == 1"/> -->
+        <RegisterForm v-if="currentTab == 1"/>
       </div>
     </el-row>
-    <div class="login">
-      登录页面
-      <button @click="login">点击登录</button>
-      {{$store.state.user.nickname}}
-    </div>
   </div>
 </template>
 
 <script>
+// 引入组件
+import LoginForm from '@/components/user/loginForm.vue'
+import RegisterForm from '@/components/user/registerForm.vue'
 export default {
+  // 注册组件
+  components:{LoginForm , RegisterForm},
   // 钩子函数
   mounted() {
-    console.log(this.$store);
+    // console.log(this.$store);
   },
   // 数据
   data() {
     return {
-      currentTab: 0,
+      currentTab: 1,
       msg: "小海绵"
     };
   },
