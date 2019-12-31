@@ -1,20 +1,21 @@
-// 这个文件用来存储关于的用户的仓库
+// 这个文件用来存储关于的用户的vuex仓库
 
-// 定义数据内容
-export const state = () => {
-    return {
-        nickname:'小糊涂'
-    }
+// 定义数据源   在页面中可以通过this.$store.state来获取数据
+export const state = {
+    token: '',
+    userInfo: {}
 }
 
-// 同步修改state数据
+// 同步修改state数据    在页面中可以通过this.$store.commit来调用函数
 export const mutations = {
-    changeName (state,data) {
-        state.nickname = data
+    // 修改用户信息
+    setUserInfo (state , data) {
+        // 在同一个文件中可以省略this.$store
+        state.userInfo = data
     }
 }
 
-// 异步修改state数据
+// 异步修改state数据    在页面中可以通过this.$store.dispatch来调用函数
 export const actions = {
     // 发送验证码
     sendCaptcha (state ,data) {
@@ -27,13 +28,17 @@ export const actions = {
         })
     },
     // 注册用户
-    register (state ,data) {
+    register ({commit} ,data) {
         return this.$axios({
             url: '/accounts/register',
-            methods: 'POST',
+            method: 'POST',
             data
         }).then((res)=>{
             console.log(res)
+            // 注册成功后,自动登录
+            // 将页面返回到上一页
+            this.$router.back()
+            // 将用户信息更新到页面
         })
     }
 }

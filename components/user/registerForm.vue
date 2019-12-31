@@ -36,7 +36,7 @@ export default {
       const reg = /^1[3-9][0-9]{9}$/;
       if (!value.trim()) {
         callback(new Error("用户名不能为空"));
-      }else if (!reg.test(value)) {
+      } else if (!reg.test(value)) {
         callback(new Error("请输入正确的手机号"));
       } else {
         callback();
@@ -78,8 +78,8 @@ export default {
         username: "15270659539",
         captcha: "000000",
         nickname: "小海绵",
-        password: '1596321',
-        confirmPwd: '1596321'
+        password: "1596321",
+        confirmPwd: "1596321"
       },
       isDisabled: false,
       captchaMessage: "发送验证码",
@@ -89,12 +89,8 @@ export default {
         captcha: [
           { required: "true", message: "憨憨,没有验证码", trigger: "blur" }
         ],
-        nickname: [
-          { required: "true", message: "憨憨,没输入手机号", trigger: "blur" }
-        ],
-        password: [
-          { required: "true", message: "憨憨,没输入手机号", trigger: "blur" }
-        ],
+        nickname: [{ validator: validateNickname, trigger: "blur" }],
+        password: [{ validator: validatePwd, trigger: "blur" }],
         confirmPwd: [{ validator: validateConfirmPwd, trigger: "blur" }]
       }
     };
@@ -145,21 +141,20 @@ export default {
     handleRegSubmit() {
       console.log(this.formData);
       // el-form有validate,可以对整个表单进行验证,其中传入一个回调函数,该回调函数会在验证接收后调用,其中该回调函数有两个参数,第一个是验证结果,第二个是验证失败的表单元素集合
-      this.$refs.form.validate((valid,obj) => {
+      this.$refs.form.validate((valid, obj) => {
         // 如果验证通过则发起注册请求,否则给出提示并且终止
         if (valid) {
           // 将formData中的confirmPwd删除
           // delete?怎么用?
           // 解构赋值和重构运算符的混用
-          const { confirmPwd , ...registerData} = this.formData
-          console.log(registerData)
+          const { confirmPwd, ...registerData } = this.formData;
+          console.log(registerData);
           // 发起注册请求
-          this.$store.dispatch('user/register',registerData)
+          this.$store.dispatch("user/register", registerData);
         } else {
-          this.$message.error('注册信息有误,请补全！')
+          this.$message.error("注册信息有误,请补全！");
         }
-      })
-
+      });
     }
   }
 };
