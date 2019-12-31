@@ -37,7 +37,7 @@ export default {
   // 数据
   data() {
     return {
-      currentTab: 1,
+      currentTab: 0,
       msg: "小海绵"
     };
   },
@@ -45,9 +45,6 @@ export default {
   methods: {
     handleChangeTab(index) {
       this.currentTab = index;
-    },
-    login() {
-      this.$store.commit("user/changeName", this.msg);
     }
   }
 };

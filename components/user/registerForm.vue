@@ -139,7 +139,6 @@ export default {
 
     // 注册
     handleRegSubmit() {
-      console.log(this.formData);
       // el-form有validate,可以对整个表单进行验证,其中传入一个回调函数,该回调函数会在验证接收后调用,其中该回调函数有两个参数,第一个是验证结果,第二个是验证失败的表单元素集合
       this.$refs.form.validate((valid, obj) => {
         // 如果验证通过则发起注册请求,否则给出提示并且终止
@@ -148,7 +147,6 @@ export default {
           // delete?怎么用?
           // 解构赋值和重构运算符的混用
           const { confirmPwd, ...registerData } = this.formData;
-          console.log(registerData);
           // 发起注册请求
           this.$store.dispatch("user/register", registerData);
         } else {

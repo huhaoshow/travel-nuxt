@@ -24,7 +24,6 @@ export default {
   },
   // 钩子函数
   mounted() {
-    console.log("???");
     // 获取轮播图图片
     this.$axios({
       url: "/scenics/banners"
