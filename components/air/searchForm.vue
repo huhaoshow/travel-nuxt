@@ -53,6 +53,7 @@
 </template>
 
 <script>
+import moment from "moment";
 export default {
   data() {
     return {
@@ -63,10 +64,10 @@ export default {
       currentTab: 0,
       // 从接口文档中发现需要传五个参数
       singleFrom: {
-        departCity: "", // 出发城市
-        departCode: "", // 出发城市代码
-        destCity: "", // 到达城市
-        destCode: "", // 到达城市代码
+        departCity: "广州", // 出发城市
+        departCode: "CAN", // 出发城市代码
+        destCity: "上海", // 到达城市
+        destCode: "SHA", // 到达城市代码
         departDate: "" // 日期字符串
       }
     };
@@ -103,14 +104,20 @@ export default {
     handleDestSelect(item) {},
 
     // 确认选择日期时触发
-    handleDate(value) {},
+    handleDate(value) {
+      this.singleFrom.departDate = moment(value).format("YYYY-MM-DD")
+    },
 
     // 触发和目标城市切换时触发
     handleReverse() {},
 
-    // 提交表单是触发
+    // 点击搜索,进行机票搜索
     handleSubmit() {
       console.log(this.singleFrom);
+      this.$router.push({
+        path: '/air/flights',
+        query: this.singleFrom
+      })
     }
   },
   // 钩子函数
