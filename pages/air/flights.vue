@@ -4,12 +4,29 @@
       <!-- 顶部过滤列表 -->
       <div class="flights-content">
         <!-- 过滤条件 -->
-        <div></div>
+        <FlightFilter :flightsData='flightsData' />
 
         <!-- 航班头部布局 -->
         <FlightsHead />
         <!-- 航班信息 -->
-        <FlightList v-for="(item,index) in flightList" :key="index" :data="item" />
+        <FlightList v-for="(item,index) in flightsList" :key="index" :data="item" />
+        <!-- 分页 -->
+        <el-row type="flex" justify="center" style="margin-top:10px;">
+          <!-- size-change：切换条数时候触发 -->
+          <!-- current-change：选择页数时候触发 -->
+          <!-- current-page: 当前页数 -->
+          <!-- page-size：当前条数 -->
+          <!-- total：总条数 -->
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="pageIndex"
+            :page-sizes="[5, 10, 15, 20]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="flightsData.total"
+          ></el-pagination>
+        </el-row>
       </div>
 
       <!-- 侧边栏 -->
@@ -24,36 +41,70 @@
 import moment from "moment";
 // 引入航班头部组件
 import FlightsHead from "@/components/air/flightsHead";
-// 引入机票列表组件
+// 引入航班列表组件
 import FlightList from "@/components/air/fligthtsList";
-
+// 引入过滤组件
+import FlightFilter from '@/components/air/flightsFilter';
 export default {
   data() {
     return {
-      flightsData: {}, // 航班总数据
-      flightList: [] //  航班列表数据,为之后的分页做准备
+      flightsData: {
+        //   由于在渲染页面的时候,异步请求的数据还没有请求成功,则info等属性都是undefind,从而导致之后的点语法造成错误,所以可以在请求没有成功前将其定为一个空对象,空对象使用点语法只会返回undefind,而不会报错
+          info: {},
+          option: {}
+      }, // 航班总数据
+      //   flightsList: [], //  航班列表数据,存储切割后的航班数据
+      pageIndex: 1, //  当前页
+      pageSize: 5, //  显示条数
+      total: 0 // 总条数
     };
   },
   // 注册组件
-  components: { FlightsHead, FlightList },
+  components: { FlightsHead, FlightList, FlightFilter},
   // 方法函数
   methods: {
-    // 封装请求航班数据的方法
-    async getData() {
-      this.$axios({
-        url: "/airs",
-        params: this.$route.query
-      }).then(res => {
-        // 将返回的数据存起来,方便使用
-        this.flightsData = res.data;
-        this.flightList = res.data.flights;
-      });
+    // 每页显示条数改变时触发的函数
+    handleSizeChange(value) {
+      // 改变每页显示条数时,让页面匹配,并将页码重置为1
+      this.pageSize = value;
+      this.pageIndex = 1;
+    },
+    // 当前页面改变时会触发
+    handleCurrentChange(value) {
+      // 改变页码时,让当前页面显示的页码与之匹配
+      this.pageIndex = value;
     }
   },
   // 钩子函数
   mounted() {
     // 在组件加载完毕后,向服务器请求航班数据
-    this.getData();
+    this.$axios({
+        url: "/airs",
+        params: this.$route.query
+      }).then(res => {
+        // 将返回的数据存起来,方便使用
+        this.flightsData = res.data;
+        this.total = res.data.total;
+        console.log(this.flightsData)
+      });
+  },
+  // 计算属性
+  computed: {
+    // 计算属性监听函数内部引用实例的属性变化，一旦发生了变化，该函数会重新计算，并且返回新的值
+    // 计算属性中可以同时监听多个变量,只要函数内部的变量改变后,就会重新计算,而watch监听只能监听一个变量
+    // 由于数据的总数不多,每次请求将所有数据返回,在切换页码的时候不需要重新请求数据了,为了实现分页的功能,需要用到computed计算属性
+    flightsList() {
+      // 若请求还没完成,则返回一个空数组
+      if (!this.flightsData.flights) {
+        return [];
+      }
+      // 计算分页的数据
+      // 将返回的所有的航班信息切割  
+      return this.flightsData.flights.slice(
+        (this.pageIndex - 1) * this.pageSize,
+        this.pageIndex * this.pageSize
+      );
+    }
   }
 };
 </script>
