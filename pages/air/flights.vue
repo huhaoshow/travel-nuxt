@@ -51,13 +51,15 @@ export default {
       flightsData: {
         //   由于在渲染页面的时候,异步请求的数据还没有请求成功,则info等属性都是undefind,从而导致之后的点语法造成错误,所以可以在请求没有成功前将其定为一个空对象,空对象使用点语法只会返回undefind,而不会报错
         info: {},
-        options: {}
+        options: {},
+        flights: []
       }, // 航班总数据
       //   flightsList: [], //  航班列表数据,存储切割后的航班数据
       // 定义flightsData的缓存变量,当该变量一旦被赋值之后不会被修改,不知道怎么形容必要性,但是挺重要的,本项目的用处是给过滤组件用于循环,防止每次过滤后的航班列表数据修改后造成影响
       cacheFlightsData: {
         info: {},
-        options: {}
+        options: {},
+        flights: []
       },
       pageIndex: 1, //  当前页
       pageSize: 5, //  显示条数

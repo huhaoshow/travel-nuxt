@@ -1,11 +1,10 @@
 // 这个文件用来存储关于的用户的vuex仓库
 
-// 定义数据源   在页面中可以通过this.$store.state来获取数据
-export const state = () => {
-    return {
-        userInfo: {}
-    }
-}
+// 定义数据源(要求是一个函数,返回一个对象)   在页面中可以通过this.$store.state来获取数据
+// 若箭头函数内部只返回一个对象,则可以用()=>({})简写,和()=>{return {}} 一样
+export const state = () => ({
+    userInfo: {}
+})
 
 // 同步修改state数据    在页面中可以通过this.$store.commit来调用函数
 export const mutations = {

@@ -67,7 +67,7 @@ export default {
         departCity: "广州", // 出发城市
         departCode: "CAN", // 出发城市代码
         destCity: "上海", // 到达城市
-        destCode: "SHA", // 到达城市代码
+        destCode: "CHA", // 到达城市代码
         departDate: "" // 日期字符串
       }
     };
@@ -86,8 +86,9 @@ export default {
     // 当用户离开到达城市输入框时,默认选择下拉列表的第一个城市
 
     // 出发城市输入框获得焦点时触发
-    // value 是选中的值，cb是回调函数，接收要展示的列表
+    // value 输入框绑定的值，cb是回调函数, 调用时候展示下拉列表，注意参数必须是数组，数组中元素必须是对象，对象中必须包含value属性
     queryDepartSearch(value, cb) {
+      console.log(value)
       cb([{ value: '广州' }, { value: 2 }, { value: 3 }]);
     },
 
@@ -98,7 +99,9 @@ export default {
     },
 
     // 出发城市下拉选择时触发
-    handleDepartSelect(item) {},
+    handleDepartSelect(item) {
+      console.log(item)
+    },
 
     // 目标城市下拉选择时触发
     handleDestSelect(item) {},
