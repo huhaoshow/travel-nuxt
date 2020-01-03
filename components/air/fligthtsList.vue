@@ -47,7 +47,7 @@
             </el-col>
             <el-col :span="5" class="price">￥{{item.org_settle_price}}</el-col>
             <el-col :span="3" class="choose-button">
-              <el-button type="warning" size="mini">选定</el-button>
+              <el-button type="warning" size="mini" @click="handleChoose(data.id,item.seat_xid)">选定</el-button>
               <p>剩余：{{item.discount}}</p>
             </el-col>
           </el-row>
@@ -64,7 +64,7 @@ export default {
     data: {
       type: Object,
       // 默认是空数组
-      default: {}
+      default() {return {}}
     }
   },
   data() {
@@ -90,6 +90,17 @@ export default {
             interval = arrMin + 24*60 - depMin
         }
         return `${Math.floor(interval / 60)}时${interval % 60}`
+    }
+  },
+  // 方法函数
+  methods: {
+    // 点击选座后跳转到相应页面
+    handleChoose(id,seat_xid) {
+      // 接收到传过来的航班id和座位id
+      this.$router.push({
+        path: '/air/order',
+        query: {id,seat_xid}
+      })
     }
   }
 };

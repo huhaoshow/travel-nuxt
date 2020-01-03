@@ -176,7 +176,13 @@ export default {
     // },
 
     // 撤销条件时候触发
-    handleFiltersCancel() {}
+    handleFiltersCancel() {
+      // 将所有筛选条件清空,由于计算属性的作用,会重置循环用的航班列表
+      this.airport = "";
+      this.flightTimes = "";
+      this.company = "";
+      this.airSize = "";
+    }
   }
 };
 </script>
