@@ -117,10 +117,13 @@ export default {
     // 点击搜索,进行机票搜索
     handleSubmit() {
       console.log(this.singleFrom);
+      // 将页面跳转到搜索结果页面
       this.$router.push({
         path: '/air/flights',
         query: this.singleFrom
       })
+      // 将本次搜索结果存入到vuex
+      this.$store.commit('air/setHistory',this.singleFrom)
     }
   },
   // 钩子函数

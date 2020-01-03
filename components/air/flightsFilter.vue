@@ -66,7 +66,7 @@ export default {
     // 传入的航班总数据
     flightsData: {
       type: Object,
-      default: {}
+      default() {return {}}
     }
   },
   // 数据

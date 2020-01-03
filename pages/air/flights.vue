@@ -4,7 +4,7 @@
       <!-- 顶部过滤列表 -->
       <div class="flights-content">
         <!-- 过滤条件 -->
-        <FlightFilter :flightsData="cacheFlightsData" @filter="handleFlightsData" />
+        <FlightFilter ref="filterChild" :flightsData="cacheFlightsData" @filter="handleFlightsData" />
 
         <!-- 航班头部布局 -->
         <FlightsHead />
@@ -32,6 +32,7 @@
       <!-- 侧边栏 -->
       <div class="aside">
         <!-- 侧边栏组件 -->
+        <FlightsAside />
       </div>
     </el-row>
   </section>
@@ -45,6 +46,8 @@ import FlightsHead from "@/components/air/flightsHead";
 import FlightList from "@/components/air/fligthtsList";
 // 引入过滤组件
 import FlightFilter from "@/components/air/flightsFilter";
+// 引入侧边栏组件
+import FlightsAside from '@/components/air/flightsAside';
 export default {
   data() {
     return {
@@ -67,9 +70,31 @@ export default {
     };
   },
   // 注册组件
-  components: { FlightsHead, FlightList, FlightFilter },
+  components: { FlightsHead, FlightList, FlightFilter, FlightsAside},
   // 方法函数
   methods: {
+    // 封装请求航班信息的方法
+    getFlightsList() {
+      this.$axios({
+      url: "/airs",
+      params: this.$route.query
+    }).then(res => {
+      // 将返回的数据存起来,方便使用
+      this.flightsData = res.data;
+      //   赋值给缓存flightData变量,一旦赋值后不能被修改,需要拆解运算符将其内容提取出来,而不是内存地址
+      this.cacheFlightsData = { ...res.data };
+      // 更新航班总条数
+      this.total = res.data.total;
+      // 重置页码为1
+      this.pageIndex = 1
+      // 将所有筛选条件重置
+      // this.$refs.filterChild可以找到子组件中绑定的成员
+      this.$refs.filterChild.airport = "";
+      this.$refs.filterChild.flightTimes = "";
+      this.$refs.filterChild.company = "";
+      this.$refs.filterChild.airSize = "";
+    });
+    },
     // 每页显示条数改变时触发的函数
     handleSizeChange(value) {
       // 改变每页显示条数时,让页面匹配,并将页码重置为1
@@ -92,16 +117,15 @@ export default {
   // 钩子函数
   mounted() {
     // 在组件加载完毕后,向服务器请求航班数据
-    this.$axios({
-      url: "/airs",
-      params: this.$route.query
-    }).then(res => {
-      // 将返回的数据存起来,方便使用
-      this.flightsData = res.data;
-      //   赋值给缓存flightData变量,一旦赋值后不能被修改,需要拆解运算符将其内容提取出来,而不是内存地址
-      this.cacheFlightsData = { ...res.data };
-      this.total = res.data.total;
-    });
+    this.getFlightsList()
+  },
+   // 监听
+  watch: {
+    // 监听路由的变化,路由变化后页面重新获取数据
+    '$route'() {
+      // 重新加载航班列表
+      this.getFlightsList();
+    }
   },
   // 计算属性
   computed: {
