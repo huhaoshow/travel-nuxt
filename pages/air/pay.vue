@@ -30,7 +30,8 @@ export default {
   // 数据
   data() {
     return {
-        price: 0
+      price: 0,
+      timerId: ""
     };
   },
   // 钩子函数
@@ -45,18 +46,57 @@ export default {
         }
       }).then(res => {
         // 将付款信息和总金额取出
-        this.price = res.data.price
-        const {payInfo} = res.data
+        this.price = res.data.price;
+        const { payInfo } = res.data;
         // 找到用于存放二维码的canvas的dom元素
-        const canvasQRcode =  document.querySelector('#qrcode-stage')
+        const canvasQRcode = document.querySelector("#qrcode-stage");
         // 调用QRCode的toCanvas方法,将付款信息下的付款url转换成二维码在页面上显示
         // options的格式是对象
-        QRCode.toCanvas(canvasQRcode,payInfo.code_url,{
-            width:200,
-            'color.Dark': "#12154f"
-        })
+        QRCode.toCanvas(canvasQRcode, payInfo.code_url, {
+          width: 200
+        });
+        // 查询付款状态
+        this.timerId = setInterval(() => {
+          this.isPay(payInfo).then(res => {
+            // 如果订单状态不是NOTPAY则说明订单已支付
+            // console.log(res)
+            const {trade_state} = res.data
+            if (trade_state !== "NOTPAY") {
+              // 订单支付成功后将关闭定时器
+              clearInterval(this.timerId);
+              // 给出提示,并关闭页面,跳到国内机票页面
+              this.$message.success("支付成功,即将跳转回首页");
+              this.$router.push({ path: "/air" });
+            }
+          });
+        }, 3000);
       });
     }, 1);
+  },
+    // 钩子函数
+    destroyed() {
+        // 若没有支付,但离开了订单页,定时器仍会继续工作,所以需要加入摧毁组件后执行的钩子函数来关闭定时器
+        clearInterval(this.timerId)
+    },
+  //  方法函数
+  methods: {
+    // 封装查询付款状态接口方法
+    isPay(data) {
+      // 获取订单id
+      const { id } = this.$route.query;
+      return this.$axios({
+        url: "/airorders/checkpay",
+        method: "POST",
+        data: {
+          id,
+          nonce_str: data.nonce_str,
+          out_trade_no: data.order_no
+        },
+        headers: {
+          Authorization: "Bearer " + this.$store.state.user.userInfo.token
+        }
+      });
+    }
   }
 };
 </script>
