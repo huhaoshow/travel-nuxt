@@ -222,7 +222,8 @@ export default {
           data
         }).then(res => {
           // 将页面跳转到订单支付页面
-          console.log(res);
+          const {id} = res.data.data
+          this.$router.push({path:'/air/pay',query:{id}})
         });
       } else {
         this.$message.error("请填写完整信息");

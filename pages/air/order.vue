@@ -39,7 +39,6 @@ export default {
       }
     }).then(res => {
       this.AirTicketsData = res.data;
-      console.log(this.AirTicketsData)
     });
   }
 };
