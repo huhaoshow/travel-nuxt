@@ -62,6 +62,7 @@
           </el-form-item>
         </el-form>
         <el-button type="warning" class="submit" @click="handleSubmit">提交订单</el-button>
+        <span>{{allPrice}}</span>
       </div>
     </div>
   </div>
@@ -96,6 +97,32 @@ export default {
       default() {
         return {};
       }
+    }
+  },
+  // 计算属性
+  computed: {
+    // 计算机票总价,将计算结果展示在订单侧边栏组件中
+    allPrice() {
+      let price = 0;
+      // 在数据还没有请回来之前,不做计算,直接终止
+      if (!this.data.seat_infos.org_settle_price) return;
+      // 机票的单价
+      price += this.data.seat_infos.org_settle_price;
+      // 燃油费
+      price += this.data.airport_tax_audlet;
+      // 保险
+      price += this.insurances.length * 30;
+      // 根据乘机人的数量翻倍
+      const usersNum = this.users.length;
+      price *= usersNum;
+      // 将需要传递给vuex的数据打包成对象
+      const airTicket = {
+        price,
+        usersNum
+      }
+      // 传递给store
+      this.$store.commit("air/setAirTicket",airTicket);
+      return "";
     }
   },
   // 方法函数
@@ -193,9 +220,9 @@ export default {
             Authorization: "Bearer " + this.$store.state.user.userInfo.token
           },
           data
-        }).then(res=>{
+        }).then(res => {
           // 将页面跳转到订单支付页面
-          console.log(res)
+          console.log(res);
         });
       } else {
         this.$message.error("请填写完整信息");
