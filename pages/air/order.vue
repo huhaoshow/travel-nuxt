@@ -3,7 +3,7 @@
     <el-row type="flex" justify="space-between">
       <!-- 订单表单 -->
       <div class="main">
-          <OrderForm />
+          <OrderForm :data ="AirTicketsData"/>
       </div>
 
       <!-- 侧边栏 -->
@@ -17,7 +17,26 @@
 import OrderForm from '@/components/air/orderForm'
 export default {
     // 注册组件
-    components:{OrderForm}
+    components:{ OrderForm },
+    // 数据
+    data() {
+      return {
+        AirTicketsData: {}
+      }
+    },
+    // 钩子函数
+    mounted() {
+      // 组件加载完成后,向服务器请求机票信息
+      this.$axios({
+        url: '/airs/' + this.$route.query.id,
+        params:{
+          seat_xid: this.$route.query.seat_xid
+        }
+      }).then((res)=>{
+        this.AirTicketsData = res.data
+      })
+    }
+
 };
 </script>
 

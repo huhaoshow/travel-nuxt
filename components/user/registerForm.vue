@@ -120,7 +120,9 @@ export default {
         // nuxt默认将store挂载在vue中,所以只需要this.$store就可以访问到vuex
         // dispatch方法可以调用actions内的函数,规则和commit一致
         this.$store
-          .dispatch("user/sendCaptcha", { tel: this.formData.username })
+          .dispatch("user/sendCaptcha", {
+            tel: this.formData.username
+          })
           .then(res => {
             // 给用户提示发送成功
             // this.$message.success("验证码发送成功,请注意查收！");
