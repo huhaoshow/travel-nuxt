@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <!-- 攻略推荐 -->
-    <el-row type="flex" justify="space-between">
+    <div class="row">
+      <!-- 攻略推荐 -->
       <!-- 菜单列 -->
       <div class="menusWrapper">
         <div class="menus">
@@ -65,18 +65,34 @@
         <div class="recommendCitys">
           <h4>推荐城市</h4>
           <nuxt-link to="/">
-            <img src="/images/pic_sea.jpeg" alt="">
+            <img src="/images/pic_sea.jpeg" alt />
           </nuxt-link>
         </div>
       </div>
       <!-- 文章列 -->
-      <div class="postWrapper">右边</div>
-    </el-row>
-    <!-- 攻略列表 -->
+      <div class="postWrapper">
+        <!-- 搜索栏 -->
+        <div class="searchWrapper">
+          <!-- 搜索框 -->
+          <div class="searchBar">
+            <input type="text" placeholder="请输入想去的地方，比如：'广州'" />
+            <i class="el-icon-search"></i>
+          </div>
+          <!-- 推荐城市关键字 -->
+          <div class="recommendKeywords">
+            推荐：
+            <span>广州</span>
+            <span>上海</span>
+            <span>北京</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+// <el-row type="flex" justify="space-between">
 export default {
   // 数据
   data() {
@@ -90,93 +106,135 @@ export default {
   width: 1000px;
   margin: 0 auto;
   padding: 20px 0;
-  .menusWrapper {
-    width: 260px;
-    position: relative;
-    .menus {
-      .menuList {
-        border: 1px solid #ddd;
-        border-right: none;
-        border-bottom: none;
-        box-shadow: 0 0 1px #f5f5f5;
-        .menusItem {
-          height: 40px;
-          line-height: 40px;
-          border-bottom: 1px solid #ddd;
-          border-right: 1px solid #ddd;
-          font-size: 14px;
-          padding: 0 20px;
-          position: relative;
-          // after伪元素添加箭头
-          &::after {
-            content: "";
-            display: block;
-            width: 10px;
-            height: 10px;
-            border-right: 1px solid #999;
-            border-top: 1px solid #999;
-            transform: rotate(45deg);
-            position: absolute;
-            right: 20px;
-            top: 15px;
-          }
-        }
-      }
-      .hiddenMenus {
-        display: none;
-        z-index: 99999;
-        position: absolute;
-        width: 350px;
-        top: 0;
-        left: 260px;
-        padding: 10px 20px;
-        box-sizing: border-box;
-        border: 1px solid #ddd;
-        background-color: #fff;
-        ul {
-          li {
+  .row {
+    display: flex;
+    justify-content: space-between;
+    .menusWrapper {
+      width: 260px;
+      position: relative;
+      .menus {
+        .menuList {
+          width: 260px;
+          border: 1px solid #ddd;
+          border-right: none;
+          border-bottom: none;
+          box-shadow: 0 0 1px #f5f5f5;
+          .menusItem {
+            height: 40px;
+            line-height: 40px;
+            border-bottom: 1px solid #ddd;
+            border-right: 1px solid #ddd;
             font-size: 14px;
-            line-height: 1.5;
-            i {
+            padding: 0 20px;
+            position: relative;
+            cursor: pointer;
+            // after伪元素添加箭头
+            &::after {
+              content: "";
+              display: block;
+              width: 10px;
+              height: 10px;
+              border-right: 1px solid #999;
+              border-top: 1px solid #999;
+              transform: rotate(45deg);
+              position: absolute;
+              right: 20px;
+              top: 15px;
+            }
+          }
+        }
+        .hiddenMenus {
+          display: none;
+          z-index: 99999;
+          position: absolute;
+          width: 350px;
+          top: 0;
+          left: 260px;
+          padding: 10px 20px;
+          box-sizing: border-box;
+          border: 1px solid #ddd;
+          background-color: #fff;
+          ul {
+            li {
+              font-size: 14px;
+              line-height: 1.5;
+              i {
+                color: orange;
+                font-size: 24px;
+                font-style: italic;
+              }
+              strong:hover {
+                text-decoration: underline;
+              }
+              strong {
+                margin: 0 10px;
+                color: orange;
+                font-weight: 400;
+              }
+              span:hover {
+                text-decoration: underline;
+              }
+              span {
+                color: #999;
+              }
+            }
+          }
+        }
+      }
+      .recommendCitys {
+        margin-top: 20px;
+        h4 {
+          font-weight: 400;
+          padding-bottom: 10px;
+          border-bottom: 1px solid #ddd;
+          margin-bottom: 10px;
+        }
+        img {
+          background-color: skyblue;
+          width: 100%;
+          display: block;
+        }
+      }
+    }
+    .postWrapper {
+      width: 700px;
+      .searchWrapper {
+        .searchBar {
+          width: 100%;
+          position: relative;
+          input {
+            box-sizing: border-box;
+            width: 100%;
+            height: 40px;
+            line-height: 40px;
+            outline: none;
+            border: 3px solid orange;
+            text-indent: 20px;
+          }
+          i {
+            font-size: 24px;
+            color: orange;
+            font-weight: 700;
+            position: absolute;
+            top: 8px;
+            right: 10px;
+          }
+        }
+        .recommendKeywords {
+          font-size: 12px;
+          padding: 10px 0;
+          color: #666;
+          span {
+            margin-right: 5px;
+            &:hover{
               color: orange;
-              font-size: 24px;
-              font-style: italic;
-            }
-            strong:hover {
               text-decoration: underline;
-            }
-            strong {
-              margin: 0 10px;
-              color: orange;
-              font-weight: 400;
-            }
-            span:hover {
-              text-decoration: underline;
-            }
-            span {
-              color: #999;
+              cursor: pointer;
             }
           }
         }
       }
     }
-    .recommendCitys{
-      margin-top: 20px;
-      h4{
-        font-weight: 400;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #ddd;
-        margin-bottom: 10px;
-      }
-      img{
-        background-color: skyblue;
-        width: 100%;
-        display: block;
-      }
-    }
-  }
-  .postWrapper {
-    width: 700px;
   }
 }
 .active {
