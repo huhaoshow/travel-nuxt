@@ -86,14 +86,32 @@
             <span>北京</span>
           </div>
         </div>
+        <!-- 攻略标题栏 -->
+        <div class="postTitle">
+          <!-- tab栏 -->
+          <div class="tabMenus">
+            <div class="tabItem">推荐攻略</div>
+          </div>
+          <!-- 写游记 -->
+          <div class="editPost">
+            <el-button type="primary" icon="el-icon-edit">&nbsp;写游记</el-button>
+          </div>
+        </div>
+        <!-- 攻略文章 -->
+        <div class="postList">
+          <IndexArticle />
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-// <el-row type="flex" justify="space-between">
+// 引入攻略文章组件
+import IndexArticle from '@/components/post/indexArticle.vue'
 export default {
+  // 注册组件
+  components:{ IndexArticle },
   // 数据
   data() {
     return {};
@@ -226,11 +244,29 @@ export default {
           color: #666;
           span {
             margin-right: 5px;
-            &:hover{
+            &:hover {
               color: orange;
               text-decoration: underline;
               cursor: pointer;
             }
+          }
+        }
+      }
+      .postTitle {
+        box-sizing: border-box;
+        display: flex;
+        justify-content: space-between;
+        vertical-align: middle;
+        border-bottom: 1px solid #eee;
+        .tabMenus {
+          flex: 1;
+          display: flex;
+          .tabItem {
+            box-sizing: border-box;
+            padding-top: 8px;
+            height: 50px;
+            font-weight: 400;
+            font-size: 18px;
           }
         }
       }
@@ -240,5 +276,9 @@ export default {
 .active {
   color: orange;
   border-right-color: #fff;
+}
+.tab-active {
+  color: orange;
+  border-bottom: 2px solid orange;
 }
 </style>
