@@ -20,12 +20,10 @@
           <!-- 隐藏的目录 -->
           <div class="hiddenMenus" v-show="isShow">
             <ul>
-              <li v-for="(item,index) in showList" :key="index">
-                <nuxt-link to="/">
+              <li @click="handleSearchPost(item.city)" v-for="(item,index) in showList" :key="index">
                   <i>{{index+1}}</i>
                   <strong>{{item.city}}</strong>
                   <span>{{item.desc}}</span>
-                </nuxt-link>
               </li>
             </ul>
           </div>
@@ -44,15 +42,20 @@
         <div class="searchWrapper">
           <!-- 搜索框 -->
           <div class="searchBar">
-            <input type="text" placeholder="请输入想去的地方，比如：'广州'" />
-            <i class="el-icon-search"></i>
+            <input
+              @keyup.enter="handleSearchPost()"
+              v-model="city"
+              type="text"
+              placeholder="请输入想去的地方，比如：'广州'"
+            />
+            <i class="el-icon-search" @click="handleSearchPost()"></i>
           </div>
           <!-- 推荐城市关键字 -->
           <div class="recommendKeywords">
             推荐：
-            <span>广州</span>
-            <span>上海</span>
-            <span>北京</span>
+            <span @click="handleSearchPost('广州')">广州</span>
+            <span @click="handleSearchPost('上海')">上海</span>
+            <span @click="handleSearchPost('北京')">北京</span>
           </div>
         </div>
         <!-- 攻略标题栏 -->
@@ -101,6 +104,7 @@ export default {
       menusList: [], // 目录循环列表
       showList: [], // tab栏展示循环列表
       allPost: [], // 所有文章
+      city: "", // 搜索城市
       // showPost: [],   // 在页面上渲染的文章数组
       total: 0, // 文章总条数
       pageIndex: 1, // 当前显示的页码
@@ -122,6 +126,35 @@ export default {
       this.isShow = false;
       this.currentTab = "";
     },
+    // 点击时触发,发请求获取与输入内容相关的攻略文章并渲染到页面
+    handleSearchPost(city) {
+      // 如果有传递城市,则将传过来的城市绑定给this.city
+      if(city) {
+        this.city = city;
+      }
+      // 如果没有输入关键字,则搜索所有文章
+      if (!this.city) {
+        this.$axios({
+          url: "/posts"
+        }).then(res => {
+          // 将文章列表存储到this.allPost,并更新文章总数
+          const data = res.data.data;
+          this.allPost = data;
+          this.total = this.allPost.length;
+        });
+      } else {
+        this.$axios({
+          url: "/posts",
+          params: {
+            city: this.city
+          }
+        }).then(res => {
+          const data = res.data.data;
+          this.allPost = data;
+          this.total = this.allPost.length;
+        });
+      }
+    },
     // 当每页显示数量改变时触发,将页面上的展示条数更新,并且将页码重置为1
     handleSizeChange(value) {
       this.pageSize = value;
@@ -135,6 +168,7 @@ export default {
   // 钩子函数
   created() {
     // 在组件被创建后,向服务器请求数据渲染页面
+    // 请求目录
     this.$axios({
       url: "/posts/cities"
     }).then(res => {
@@ -145,7 +179,6 @@ export default {
     this.$axios({
       url: "/posts"
     }).then(res => {
-      console.log(res);
       // 将文章列表存储到this.allPost,并更新文章总数
       const data = res.data.data;
       this.allPost = data;
@@ -221,6 +254,7 @@ export default {
           background-color: #fff;
           ul {
             li {
+              cursor: pointer;
               font-size: 14px;
               line-height: 1.5;
               i {

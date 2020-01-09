@@ -14,7 +14,7 @@
     <div class="content">
       <!-- 文章标题 -->
       <div class="articleTitle">
-        <nuxt-link to="/">
+        <nuxt-link :to="'/post/detail?id=' + postInfo.id">
           <h4 :title="postInfo.title">{{postInfo.title}}</h4>
         </nuxt-link>
       </div>
@@ -48,10 +48,10 @@
     </div>
   </div>
   <!-- 多图文章 -->
-  <div v-else class="article">
+  <div v-else-if="postInfo.images.length > 1" class="article">
     <!-- 文章标题 -->
     <div class="articleTitle">
-      <nuxt-link to="/">
+      <nuxt-link :to="'/post/detail?id=' + postInfo.id">
         <h4 :title="postInfo.title">{{postInfo.title}}</h4>
       </nuxt-link>
     </div>
@@ -86,6 +86,9 @@
       <!-- 文章点赞数 -->
       <div class="articleIdentify">74&nbsp;赞</div>
     </div>
+  </div>
+  <div class="tips" v-else>
+    <h3>没有找到你想要的数据哦!</h3>
   </div>
 </template>
 
