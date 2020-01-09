@@ -68,18 +68,18 @@
         </div>
         <!-- 攻略文章 -->
         <div class="postList">
-          <IndexArticle v-for="(item,index) in recommendPost" :key="index" :postInfo ='item'/>
+          <IndexArticle v-for="(item,index) in showPost" :key="index" :postInfo="item" />
         </div>
         <!-- 分页栏 -->
         <div class="pagination">
           <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
-            :current-page="100"
-            :page-sizes="[100, 200, 300, 400]"
-            :page-size="100"
+            :current-page="pageIndex"
+            :page-sizes="[3, 5, 7]"
+            :page-size="pageSize"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="400"
+            :total="total"
           ></el-pagination>
         </div>
       </div>
@@ -96,11 +96,15 @@ export default {
   // 数据
   data() {
     return {
-      currentTab: "",
-      isShow: false,
-      menusList: [],
-      showList: [],
-      recommendPost: []
+      currentTab: "", // 当前tab栏选项卡的索引值
+      isShow: false, // 是否显示tab栏内容
+      menusList: [], // 目录循环列表
+      showList: [], // tab栏展示循环列表
+      allPost: [], // 所有文章
+      // showPost: [],   // 在页面上渲染的文章数组
+      total: 0, // 文章总条数
+      pageIndex: 1, // 当前显示的页码
+      pageSize: 3 //每页显示的文章数
     };
   },
   // 方法函数
@@ -118,10 +122,15 @@ export default {
       this.isShow = false;
       this.currentTab = "";
     },
-    // 当每页显示数量改变时触发
-    handleSizeChange() {},
-    // 当前页改变时触发
-    handleCurrentChange() {}
+    // 当每页显示数量改变时触发,将页面上的展示条数更新,并且将页码重置为1
+    handleSizeChange(value) {
+      this.pageSize = value;
+      this.pageIndex = 1;
+    },
+    // 当前页改变时触发,将页面上展示的文章更新
+    handleCurrentChange(value) {
+      this.pageIndex = value;
+    }
   },
   // 钩子函数
   created() {
@@ -137,10 +146,22 @@ export default {
       url: "/posts"
     }).then(res => {
       console.log(res);
-      // 将文章列表存储到this.recommendPost
+      // 将文章列表存储到this.allPost,并更新文章总数
       const data = res.data.data;
-      this.recommendPost = data;
+      this.allPost = data;
+      this.total = this.allPost.length;
     });
+  },
+  // 计算属性
+  computed: {
+    // 监听showPost内的所有变量,当数据变化时,重新计算新的showPost
+    showPost() {
+      // 将请求回来的所有文章数组进行切割
+      return this.allPost.slice(
+        (this.pageIndex - 1) * this.pageSize,
+        this.pageIndex * this.pageSize
+      );
+    }
   }
 };
 </script>
