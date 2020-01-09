@@ -4,58 +4,27 @@
       <!-- 攻略推荐 -->
       <!-- 菜单列 -->
       <div class="menusWrapper">
-        <div class="menus">
+        <div class="menus" @mouseleave="handleTabHidden">
           <!-- 目录列表 -->
           <div class="menuList">
-            <div class="menusItem">
-              <span>热门城市</span>
-            </div>
-            <div class="menusItem">
-              <span>热门城市</span>
-            </div>
-            <div class="menusItem">
-              <span>热门城市</span>
-            </div>
-            <div class="menusItem">
-              <span>热门城市</span>
+            <div
+              @mouseenter="handleMenusTab(item,index)"
+              class="menusItem"
+              v-for="(item,index) in menusList"
+              :key="index"
+              :class="{active:index === currentTab}"
+            >
+              <span>{{item.type}}</span>
             </div>
           </div>
           <!-- 隐藏的目录 -->
-          <div class="hiddenMenus">
+          <div class="hiddenMenus" v-show="isShow">
             <ul>
-              <li>
+              <li v-for="(item,index) in showList" :key="index">
                 <nuxt-link to="/">
-                  <i>1</i>
-                  <strong>北京</strong>
-                  <span>世界著名古都和现代化国际城市</span>
-                </nuxt-link>
-              </li>
-              <li>
-                <nuxt-link to="/">
-                  <i>1</i>
-                  <strong>北京</strong>
-                  <span>世界著名古都和现代化国际城市</span>
-                </nuxt-link>
-              </li>
-              <li>
-                <nuxt-link to="/">
-                  <i>1</i>
-                  <strong>北京</strong>
-                  <span>世界著名古都和现代化国际城市</span>
-                </nuxt-link>
-              </li>
-              <li>
-                <nuxt-link to="/">
-                  <i>1</i>
-                  <strong>北京</strong>
-                  <span>世界著名古都和现代化国际城市</span>
-                </nuxt-link>
-              </li>
-              <li>
-                <nuxt-link to="/">
-                  <i>1</i>
-                  <strong>北京</strong>
-                  <span>世界著名古都和现代化国际城市</span>
+                  <i>{{index+1}}</i>
+                  <strong>{{item.city}}</strong>
+                  <span>{{item.desc}}</span>
                 </nuxt-link>
               </li>
             </ul>
@@ -65,7 +34,7 @@
         <div class="recommendCitys">
           <h4>推荐城市</h4>
           <nuxt-link to="/">
-            <img src="/images/pic_sea.jpeg" alt />
+            <img src="../../assets/recommendCitys.jpeg" alt />
           </nuxt-link>
         </div>
       </div>
@@ -101,6 +70,18 @@
         <div class="postList">
           <IndexArticle />
         </div>
+        <!-- 分页栏 -->
+        <div class="pagination">
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="100"
+            :page-sizes="[100, 200, 300, 400]"
+            :page-size="100"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="400"
+          ></el-pagination>
+        </div>
       </div>
     </div>
   </div>
@@ -108,13 +89,49 @@
 
 <script>
 // 引入攻略文章组件
-import IndexArticle from '@/components/post/indexArticle.vue'
+import IndexArticle from "@/components/post/indexArticle.vue";
 export default {
   // 注册组件
-  components:{ IndexArticle },
+  components: { IndexArticle },
   // 数据
   data() {
-    return {};
+    return {
+      currentTab: "",
+      isShow: false,
+      menusList: [],
+      showList: []
+    };
+  },
+  // 方法函数
+  methods: {
+    // 鼠标移入时,给对应选项卡添加active,并展示出对应的内容
+    handleMenusTab(item, index) {
+      // 将当前tab的index赋值给currentTab,使得在tab栏中的index === currentTab成立,从而加上active类名
+      this.currentTab = index;
+      // 将对应的展示栏目显示出来,将item中的children赋值给showList,让其在展示区域渲染
+      this.isShow = true;
+      this.showList = item.children;
+    },
+    // 鼠标移出tab栏时将内容展示框隐藏,并取消所有的active
+    handleTabHidden() {
+      this.isShow = false;
+      this.currentTab = '';
+    },
+    // 当每页显示数量改变时触发
+    handleSizeChange() {},
+    // 当前页改变时触发
+    handleCurrentChange() {}
+  },
+  // 钩子函数
+  created() {
+    // 在组件被创建后,向服务器请求数据渲染页面
+    this.$axios({
+      url: "/posts/cities"
+    }).then(res => {
+      const { data } = res.data;
+      this.menusList = data;
+      console.log(this.menusList);
+    });
   }
 };
 </script>
@@ -162,7 +179,6 @@ export default {
           }
         }
         .hiddenMenus {
-          display: none;
           z-index: 99999;
           position: absolute;
           width: 350px;
@@ -208,8 +224,8 @@ export default {
           margin-bottom: 10px;
         }
         img {
-          background-color: skyblue;
           width: 100%;
+          height: 173.2px;
           display: block;
         }
       }
@@ -270,6 +286,11 @@ export default {
           }
         }
       }
+    }
+    .pagination {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
     }
   }
 }

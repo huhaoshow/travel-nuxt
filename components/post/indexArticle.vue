@@ -36,15 +36,20 @@
           <i class="el-icon-location-outline"></i>
           北京市
         </span>
-        <span>by
-          <nuxt-link to="/">
-            <img src="" alt="">
-            地球发动机
-          </nuxt-link>
+        <span>
+          by
+          <a href="/">
+            <img src="https://images.mafengwo.net/images/i/face/brands_v3/6@2x.png" alt />
+          </a>
+          <a href="/">地球发动机</a>
+        </span>
+        <span>
+          <i class="el-icon-view"></i>
+          &nbsp;1346
         </span>
       </div>
       <!-- 文章点赞数 -->
-      <div class="articleIdentify">74赞</div>
+      <div class="articleIdentify">74&nbsp;赞</div>
     </div>
   </div>
 </template>
@@ -104,11 +109,23 @@ export default {};
       color: #999;
       display: flex;
       align-items: center;
-      span {
+      > span {
         margin-right: 10px;
+        display: flex;
+        align-items: center;
+        img {
+          width: 16px;
+          height: 16px;
+          border-radius: 100px;
+          margin: 5px;
+        }
+        span {
+          color: orange;
+        }
       }
     }
     .articleIdentify {
+      color: orange;
     }
   }
 }
