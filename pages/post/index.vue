@@ -59,7 +59,7 @@
         <div class="postTitle">
           <!-- tab栏 -->
           <div class="tabMenus">
-            <div class="tabItem">推荐攻略</div>
+            <div class="tabItem theme-active">推荐攻略</div>
           </div>
           <!-- 写游记 -->
           <div class="editPost">
@@ -68,7 +68,7 @@
         </div>
         <!-- 攻略文章 -->
         <div class="postList">
-          <IndexArticle />
+          <IndexArticle v-for="(item,index) in recommendPost" :key="index" :postInfo ='item'/>
         </div>
         <!-- 分页栏 -->
         <div class="pagination">
@@ -99,7 +99,8 @@ export default {
       currentTab: "",
       isShow: false,
       menusList: [],
-      showList: []
+      showList: [],
+      recommendPost: []
     };
   },
   // 方法函数
@@ -115,7 +116,7 @@ export default {
     // 鼠标移出tab栏时将内容展示框隐藏,并取消所有的active
     handleTabHidden() {
       this.isShow = false;
-      this.currentTab = '';
+      this.currentTab = "";
     },
     // 当每页显示数量改变时触发
     handleSizeChange() {},
@@ -130,7 +131,15 @@ export default {
     }).then(res => {
       const { data } = res.data;
       this.menusList = data;
-      console.log(this.menusList);
+    });
+    // 请求文章
+    this.$axios({
+      url: "/posts"
+    }).then(res => {
+      console.log(res);
+      // 将文章列表存储到this.recommendPost
+      const data = res.data.data;
+      this.recommendPost = data;
     });
   }
 };
@@ -155,6 +164,7 @@ export default {
           border-bottom: none;
           box-shadow: 0 0 1px #f5f5f5;
           .menusItem {
+            z-index: 3;
             height: 40px;
             line-height: 40px;
             border-bottom: 1px solid #ddd;
@@ -179,7 +189,7 @@ export default {
           }
         }
         .hiddenMenus {
-          z-index: 99999;
+          z-index: 2;
           position: absolute;
           width: 350px;
           top: 0;
@@ -278,6 +288,7 @@ export default {
           flex: 1;
           display: flex;
           .tabItem {
+            z-index: 1;
             box-sizing: border-box;
             padding-top: 8px;
             height: 50px;
@@ -296,9 +307,10 @@ export default {
 }
 .active {
   color: orange;
-  border-right-color: #fff;
+  border-right-color: #fff !important;
 }
-.tab-active {
+.theme-active {
+  z-index: 99999;
   color: orange;
   border-bottom: 2px solid orange;
 }

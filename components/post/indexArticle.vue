@@ -1,32 +1,67 @@
 <template>
-  <div class="article">
+  <!-- 单图文章 -->
+  <div
+    class="article"
+    v-if="postInfo.images.length === 1"
+    style="display:flex;justify-content:space-between;"
+  >
+    <div class="img">
+      <!-- 文章图片 -->
+      <div class="articleImg">
+        <img v-for="(item,index) in postInfo.images" :key="index" :src="item" />
+      </div>
+    </div>
+    <div class="content">
+      <!-- 文章标题 -->
+      <div class="articleTitle">
+        <nuxt-link to="/">
+          <h4 :title="postInfo.title">{{postInfo.title}}</h4>
+        </nuxt-link>
+      </div>
+      <!-- 文章内容 -->
+      <div class="articleContent">
+        <p>{{postInfo.summary}}</p>
+      </div>
+      <!-- 文章信息 -->
+      <div class="articleInfo">
+        <!-- 作者信息 -->
+        <div class="authorInfo">
+          <span>
+            <i class="el-icon-location-outline"></i>
+            {{postInfo.cityName}}
+          </span>
+          <span>
+            by
+            <a href="/">
+              <img :src="'http://localhost:1337' + postInfo.account.defaultAvatar" />
+            </a>
+            <a href="/">{{postInfo.account.nickname}}</a>
+          </span>
+          <span>
+            <i class="el-icon-view"></i>
+            &nbsp;{{postInfo.watch}}
+          </span>
+        </div>
+        <!-- 文章点赞数 -->
+        <div class="articleIdentify">74&nbsp;赞</div>
+      </div>
+    </div>
+  </div>
+  <!-- 多图文章 -->
+  <div v-else class="article">
     <!-- 文章标题 -->
     <div class="articleTitle">
       <nuxt-link to="/">
-        <h4 title="塞班贵？一定是你的打开方式不对！6000块玩转塞班">
-          <slot name="title">塞班贵？一定是你的打开方式不对！6000块玩转塞班</slot>
-        </h4>
+        <h4 :title="postInfo.title">{{postInfo.title}}</h4>
       </nuxt-link>
     </div>
     <!-- 文章内容 -->
     <div class="articleContent">
-      <p>
-        <slot
-          name="content"
-        >大家对塞班岛总存在着这样的误解，知道它是美属地盘，就理所当然地觉得这里的花费一定很高，花费高有高的玩法，那如果只有6000块的预算呢？要怎么玩？关于旅行这件事，我们要让钱花得更有道理，收下这份攻略，带你6000块花式玩转塞班。</slot>
-      </p>
+      <p>{{postInfo.summary}}</p>
     </div>
     <!-- 文章图片 -->
     <div class="articleImg">
-      <img
-        src="https://n3-q.mafengwo.net/s10/M00/E8/E4/wKgBZ1octoCABhgLAAafahORRLs91.jpeg?imageView2%2F2%2Fw%2F1360%2Fq%2F90"
-        alt
-      />
-      <img src="https://images.mafengwo.net/images/i/face/brands_v3/6@2x.png" alt />
-      <img
-        src="https://p1-q.mafengwo.net/s10/M00/E9/33/wKgBZ1octwiAAKAoAAJ9ixcJc9M71.jpeg?imageView2%2F2%2Fw%2F1360%2Fq%2F90"
-        alt
-      />
+      <img v-for="(item,index) in postInfo.images" :key="index" :src="item" />
     </div>
     <!-- 文章信息 -->
     <div class="articleInfo">
@@ -34,18 +69,18 @@
       <div class="authorInfo">
         <span>
           <i class="el-icon-location-outline"></i>
-          北京市
+          {{postInfo.cityName}}
         </span>
         <span>
           by
           <a href="/">
-            <img src="https://images.mafengwo.net/images/i/face/brands_v3/6@2x.png" alt />
+            <img :src="'http://localhost:1337' + postInfo.account.defaultAvatar" />
           </a>
-          <a href="/">地球发动机</a>
+          <a href="/">{{postInfo.account.nickname}}</a>
         </span>
         <span>
           <i class="el-icon-view"></i>
-          &nbsp;1346
+          &nbsp;{{postInfo.watch}}
         </span>
       </div>
       <!-- 文章点赞数 -->
@@ -55,7 +90,17 @@
 </template>
 
 <script>
-export default {};
+export default {
+  // 父传递数据
+  props: {
+    postInfo: {
+      type: Object,
+      default() {
+        return {};
+      }
+    }
+  }
+};
 </script>
 
 <style scoped lang='less'>
@@ -84,8 +129,8 @@ export default {};
       color: #666;
       // 多行文本超过部分省略并用省略号代替
       overflow: hidden;
-      text-overflow: ellipsis;
       display: -webkit-box;
+      -webkit-box-orient: vertical;
       -webkit-line-clamp: 3;
     }
   }
@@ -126,6 +171,33 @@ export default {};
     }
     .articleIdentify {
       color: orange;
+    }
+  }
+}
+.content {
+  width: 470px;
+  .articleContent {
+    margin-bottom: 15px;
+    font-size: 14px;
+    line-height: 1.5;
+    p {
+      color: #666;
+      // 多行文本超过部分省略并用省略号代替
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+    }
+  }
+}
+.img {
+  .articleImg {
+    box-sizing: border-box;
+    margin: 0;
+    img {
+      width: 220px;
+      height: 150px;
+      object-fit: cover;
     }
   }
 }
