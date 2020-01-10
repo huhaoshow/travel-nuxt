@@ -94,16 +94,28 @@
           </div>
         </div>
         <!-- 回复跟帖 -->
+        <!-- 评论列表 -->
         <div class="replyList">
-          <div class="replyItem">
+          <!-- 评论内容 -->
+          <div class="replyItem" v-for="(item,index) in commentArr" :key="index">
+            <!-- 回复作者信息 -->
             <div class="replyInfo">
-              <img src="../../assets/recommendCitys.jpeg" />
-              地球发动机
-              <span>2020-01-10 10:47</span>
-              <i>10</i>
+              <img :src="'http://localhost:1337' + item.account.defaultAvatar" />
+              {{item.account.nickname}}
+              <span>{{item.created_at | timeFormat}}</span>
+              <i>{{item.level}}</i>
             </div>
-            <div class="replyContent">
-              <DetailComment />
+            <!-- 评论内容 -->
+            <div class="commentContent">
+              <div class="oldReply">
+                <CommentFloor :comment="item.parent" />
+              </div>
+              <div class="newReply">
+                <span>{{item.content}}</span>
+                <div class="replyButton">
+                  <span>回复</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -122,10 +134,10 @@
 
 <script>
 // 引入评论组件
-import DetailComment from "@/components/post/detailComment.vue";
+import CommentFloor from "@/components/post/commentFloor.vue";
 export default {
   // 注册组件
-  components: { DetailComment },
+  components: { CommentFloor },
   // 数据
   data() {
     return {
@@ -133,6 +145,7 @@ export default {
         city: {},
         comments: []
       }, // 文章信息
+      commentArr: [], //  评论详情数组
       commentContent: "",
       dialogImageUrl: "",
       dialogVisible: false,
@@ -143,6 +156,7 @@ export default {
   created() {
     // 当组件被创建后,向服务器请求文章详情数据渲染页面
     const id = this.$route.query.id;
+    // 请求文章详情
     this.$axios({
       url: "/posts",
       params: { id }
@@ -152,6 +166,45 @@ export default {
       this.postInfo = data;
       console.log(this.postInfo);
     });
+    // 请求评论
+    this.$axios({
+      url: "/posts/comments",
+      params: {
+        post: id,
+        _limit: 2,
+        _start: 1
+      }
+    }).then(res => {
+      // 将返回的评论详情取出存入到commentArr中
+      const { data } = res.data;
+      this.commentArr = data;
+      console.log(this.commentArr);
+    });
+  },
+  // 过滤器
+  filters: {
+    timeFormat(data, spe) {
+      spe = spe || "-";
+      let time = new Date(data);
+      let year = time.getFullYear();
+      let month = time.getMonth() + 1;
+      if (month < 10) {
+        month = "0" + month;
+      }
+      let day = time.getDate();
+      if (day < 10) {
+        day = "0" + day;
+      }
+      let hours = time.getHours();
+      if (hours < 10) {
+        hours = "0" + hours;
+      }
+      let minutes = time.getMinutes();
+      if (minutes < 10) {
+        minutes = "0" + minutes;
+      }
+      return year + spe + month + spe + day + spe + hours + spe + minutes;
+    }
   },
   // 方法函数
   methods: {
@@ -163,9 +216,6 @@ export default {
 </script>
 
 <style scoped lang='less'>
-// * {
-//   max-width: 700px !important;
-// }
 .comtainner {
   width: 1000px;
   margin: 0 auto;
@@ -250,6 +300,9 @@ export default {
       .replyItem {
         border-bottom: 1px dashed #ddd;
         padding: 20px 20px 5px;
+        &:last-child {
+          border-bottom: none;
+        }
         .replyInfo {
           margin-bottom: 10px;
           font-size: 12px;
@@ -269,8 +322,30 @@ export default {
             float: right;
           }
         }
-        .replyContent {
+        .commentContent {
           padding-left: 30px;
+          .oldReply {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 2px;
+          }
+          .newReply {
+            margin-top: 10px;
+            .replyButton {
+              height: 20px;
+              line-height: 20px;
+              font-size: 12px;
+              color: #1e50a2;
+              text-align: right;
+              &:hover span {
+                display: block;
+              }
+              span {
+                display: none;
+                cursor: pointer;
+              }
+            }
+          }
         }
       }
     }
