@@ -10,20 +10,20 @@
         </el-breadcrumb>
       </div>
       <!-- 标题 -->
-      <h2>小蛮腰广州塔，怎么玩才不遗憾？</h2>
+      <h2>{{postInfo.title}}</h2>
       <!-- 文章信息 -->
       <div class="postInfo">
-        <span>攻略：2019-05-22 1:16</span>
-        <span>阅读：637</span>
+        <span>攻略：{{postInfo.city.created_at}}</span>
+        <span>阅读：{{postInfo.watch}}</span>
       </div>
       <!-- 文章内容 -->
-      <div class="postContent">...</div>
+      <div class="postContent" v-html="postInfo.content"></div>
       <!-- 文章操作项 -->
       <div class="postOption">
         <div class="item">
           <span>
             <i class="el-icon-edit-outline"></i>
-            评论(49)
+            评论({{postInfo.comments.length}})
           </span>
           <span>
             <i class="el-icon-star-off"></i>
@@ -94,7 +94,19 @@
           </div>
         </div>
         <!-- 回复跟帖 -->
-        <div class="replyList"></div>
+        <div class="replyList">
+          <div class="replyItem">
+            <div class="replyInfo">
+              <img src="../../assets/recommendCitys.jpeg" />
+              地球发动机
+              <span>2020-01-10 10:47</span>
+              <i>10</i>
+            </div>
+            <div class="replyContent">
+              <DetailComment />
+            </div>
+          </div>
+        </div>
         <!-- 分页栏 -->
         <div class="pagination"></div>
       </div>
@@ -109,15 +121,37 @@
 </template>
 
 <script>
+// 引入评论组件
+import DetailComment from "@/components/post/detailComment.vue";
 export default {
+  // 注册组件
+  components: { DetailComment },
   // 数据
   data() {
     return {
+      postInfo: {
+        city: {},
+        comments: []
+      }, // 文章信息
       commentContent: "",
       dialogImageUrl: "",
       dialogVisible: false,
       disabled: false
     };
+  },
+  // 钩子函数
+  created() {
+    // 当组件被创建后,向服务器请求文章详情数据渲染页面
+    const id = this.$route.query.id;
+    this.$axios({
+      url: "/posts",
+      params: { id }
+    }).then(res => {
+      // 将文章信息取出并储存起来
+      const [data] = res.data.data;
+      this.postInfo = data;
+      console.log(this.postInfo);
+    });
   },
   // 方法函数
   methods: {
@@ -129,6 +163,9 @@ export default {
 </script>
 
 <style scoped lang='less'>
+// * {
+//   max-width: 700px !important;
+// }
 .comtainner {
   width: 1000px;
   margin: 0 auto;
@@ -148,6 +185,13 @@ export default {
     }
     .postContent {
       line-height: 1.5;
+      // 由于postContent盒子下的内容是通过v-html渲染出来的,所以由于scoped只能作用于这个文件,所以需要通过/deep/来深度修改
+      /deep/ img {
+        margin: 10px 0;
+      }
+      /deep/ * {
+        max-width: 700px !important;
+      }
     }
     .postOption {
       padding: 50px 0 30px;
@@ -198,6 +242,35 @@ export default {
           width: 100px;
           height: 100px;
           line-height: 100px;
+        }
+      }
+    }
+    .replyList {
+      border: 1px solid #ddd;
+      .replyItem {
+        border-bottom: 1px dashed #ddd;
+        padding: 20px 20px 5px;
+        .replyInfo {
+          margin-bottom: 10px;
+          font-size: 12px;
+          color: #666;
+          * {
+            vertical-align: top;
+          }
+          img {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+          }
+          span {
+            color: #999;
+          }
+          i {
+            float: right;
+          }
+        }
+        .replyContent {
+          padding-left: 30px;
         }
       }
     }
