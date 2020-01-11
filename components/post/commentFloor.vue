@@ -1,13 +1,13 @@
 <template>
-  <div>
-    <!-- 递归组件,知道生成1楼为止 -->
+  <div class="commentFloor">
+    <!-- 递归组件,直到生成1楼为止 -->
     <div class="oldReply" v-if="comment.parent">
       <firstComment :comment="comment.parent" />
     </div>
     <!-- 每层评论信息 -->
     <div class="newReply">
       <!-- 作者信息 -->
-      <div class="replyInfo">
+      <div class="authorInfo">
         {{comment.account.nickname}}
         <span>{{comment.created_at | timeFormat}}</span>
         <i>{{comment.level}}</i>
@@ -18,7 +18,7 @@
       </div>
       <!-- 回复按钮 -->
       <div class="replyButton">
-        <span class="reply">回复</span>
+        <span>回复</span>
       </div>
     </div>
   </div>
@@ -68,53 +68,53 @@ export default {
 </script>
 
 <style scoped lang='less'>
-.oldReply {
+.commentFloor {
   background: #f9f9f9;
   border: 1px solid #ddd;
   padding: 2px;
-}
-.newReply {
-  padding: 5px 10px 0;
-  &:hover .replyButton span {
-    display: inline;
-  }
-  .replyInfo {
-    margin-bottom: 10px;
-    font-size: 12px;
-    color: #666;
-    * {
-      vertical-align: top;
+  .newReply {
+    padding: 5px 10px 0;
+    &:hover .replyButton span {
+      display: inline;
     }
-    img {
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-    }
-    span {
-      color: #999;
-    }
-    i {
-      float: right;
-    }
-  }
-  .commentContent {
-    span {
-      font-size: 14px;
-    }
-    margin-top: 10px;
-  }
-  .replyButton {
-    height: 20px;
-    line-height: 20px;
-    font-size: 12px;
-    color: #1e50a2;
-    text-align: right;
-    span {
-      &:hover {
-        text-decoration: underline;
+    .authorInfo {
+      margin-bottom: 10px;
+      font-size: 12px;
+      color: #666;
+      * {
+        vertical-align: top;
       }
-      display: none;
-      cursor: pointer;
+      img {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+      }
+      span {
+        color: #999;
+      }
+      i {
+        float: right;
+      }
+    }
+    .commentContent {
+      span {
+        font-size: 14px;
+      }
+      margin-top: 10px;
+    }
+    .replyButton {
+      height: 20px;
+      line-height: 20px;
+      font-size: 12px;
+      color: #1e50a2;
+      text-align: right;
+      span {
+        &:hover {
+          text-decoration: underline;
+        }
+        display: none;
+        cursor: pointer;
+      }
     }
   }
 }

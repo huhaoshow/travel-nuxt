@@ -95,11 +95,11 @@
         </div>
         <!-- 回复跟帖 -->
         <!-- 评论列表 -->
-        <div class="replyList">
+        <div class="commentList">
           <!-- 评论内容 -->
-          <div class="replyItem" v-for="(item,index) in commentArr" :key="index">
-            <!-- 回复作者信息 -->
-            <div class="replyInfo">
+          <div class="commentItem" v-for="(item,index) in commentArr" :key="index">
+            <!-- 评论作者信息 -->
+            <div class="authorInfo">
               <img :src="'http://localhost:1337' + item.account.defaultAvatar" />
               {{item.account.nickname}}
               <span>{{item.created_at | timeFormat}}</span>
@@ -107,9 +107,11 @@
             </div>
             <!-- 评论内容 -->
             <div class="commentContent">
-              <div class="oldReply">
+              <!-- 评论的所有跟帖,一级评论没有跟帖 -->
+              <div class="allReply" v-if="item.parent">
                 <CommentFloor :comment="item.parent" />
               </div>
+              <!-- 最新跟帖内容 -->
               <div class="newReply">
                 <span>{{item.content}}</span>
                 <div class="replyButton">
@@ -295,15 +297,15 @@ export default {
         }
       }
     }
-    .replyList {
+    .commentList {
       border: 1px solid #ddd;
-      .replyItem {
+      .commentItem {
         border-bottom: 1px dashed #ddd;
         padding: 20px 20px 5px;
         &:last-child {
           border-bottom: none;
         }
-        .replyInfo {
+        .authorInfo {
           margin-bottom: 10px;
           font-size: 12px;
           color: #666;
@@ -324,23 +326,21 @@ export default {
         }
         .commentContent {
           padding-left: 30px;
-          .oldReply {
-            background: #f9f9f9;
-            border: 1px solid #ddd;
-            padding: 2px;
-          }
           .newReply {
             margin-top: 10px;
+            &:hover .replyButton span {
+              display: inline;
+            }
             .replyButton {
               height: 20px;
               line-height: 20px;
               font-size: 12px;
               color: #1e50a2;
               text-align: right;
-              &:hover span {
-                display: block;
-              }
               span {
+                &:hover {
+                  text-decoration: underline;
+                }
                 display: none;
                 cursor: pointer;
               }
