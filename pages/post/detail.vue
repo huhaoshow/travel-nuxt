@@ -42,9 +42,17 @@
       <!-- 评论区域 -->
       <div class="comment">
         <h4>评论</h4>
+        <!-- 点击回复时显示出来的回复作者 -->
+        <div class="replyAuthor">
+          <span>回复</span>
+          <!-- 作者 -->
+          <span>@{{replyAthor}}</span>
+          <i class="el-icon-close" @click="handleClose"></i>
+        </div>
         <!-- 评论框 -->
         <div class="commentFrame">
           <el-input
+            ref="commentArea"
             type="textarea"
             rows="2"
             resize="none"
@@ -56,7 +64,10 @@
         <div class="uploadSubmit">
           <!-- 上传图片 -->
           <div class="upload">
-            <el-upload action="#" list-type="picture-card" :auto-upload="false">
+            <el-upload
+              action="/upload"
+              list-type="picture-card"
+            >
               <i slot="default" class="el-icon-plus"></i>
               <div slot="file" slot-scope="{file}">
                 <img class="el-upload-list__item-thumbnail" :src="file.url" alt />
@@ -90,7 +101,7 @@
           </div>
           <!-- 提交评论 -->
           <div class="submit">
-            <el-button size="small" type="primary">提交</el-button>
+            <el-button size="small" type="primary" @click="handleSubmit">提交</el-button>
           </div>
         </div>
         <!-- 回复跟帖 -->
@@ -115,7 +126,7 @@
               <div class="newReply">
                 <span>{{item.content}}</span>
                 <div class="replyButton">
-                  <span>回复</span>
+                  <span @click="handleReply(item.account.nickname)">回复</span>
                 </div>
               </div>
             </div>
@@ -148,6 +159,7 @@ export default {
         comments: []
       }, // 文章信息
       commentArr: [], //  评论详情数组
+      replyAthor: "", //  回复作者
       commentContent: "",
       dialogImageUrl: "",
       dialogVisible: false,
@@ -210,7 +222,21 @@ export default {
   },
   // 方法函数
   methods: {
-    handlePictureCardPreview() {},
+    // 点击回复触发,回复当前楼层的评论
+    handleReply(data) {
+      // 点击回复后将评论框获得焦点,并显示回复的作者
+      this.$refs.commentArea.$refs.textarea.focus();
+      document.querySelector(".replyAuthor").style.display = "inline-block";
+      this.replyAthor = data;
+    },
+    // 点击关闭图标触发,将回复作者隐藏
+    handleClose() {
+      document.querySelector(".replyAuthor").style.display = "none";
+    },
+    handleSubmit() {},
+    handlePictureCardPreview(files) {
+      console.log(files);
+    },
     handleDownload() {},
     handleRemove() {}
   }
@@ -272,6 +298,34 @@ export default {
         font-weight: 400;
         margin-bottom: 20px;
         font-size: 18px;
+      }
+      .replyAuthor {
+        display: none;
+        box-sizing: border-box;
+        height: 32px;
+        line-height: 28px;
+        color: #909399;
+        font-size: 12px;
+        border: 1px solid rgba(144, 147, 153, 0.2);
+        background-color: rgba(144, 147, 153, 0.1);
+        border-radius: 4px;
+        margin-bottom: 10px;
+        padding: 0 10px;
+        span:nth-child(2) {
+          margin: 0 5px;
+        }
+        i {
+          width: 16px;
+          height: 16px;
+          line-height: 16px;
+          text-align: center;
+          border-radius: 100px;
+          cursor: pointer;
+          &:hover {
+            background-color: #999;
+            color: white;
+          }
+        }
       }
       .commentFrame {
         widows: 100%;

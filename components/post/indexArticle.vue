@@ -5,12 +5,13 @@
     v-if="postInfo.images.length === 1"
     style="display:flex;justify-content:space-between;"
   >
+    <!-- 文章图片 -->
     <div class="img">
-      <!-- 文章图片 -->
       <div class="articleImg">
         <img v-for="(item,index) in postInfo.images" :key="index" :src="item" />
       </div>
     </div>
+    <!-- 文章内容 -->
     <div class="content">
       <!-- 文章标题 -->
       <div class="articleTitle">
@@ -110,6 +111,8 @@ export default {
 .article {
   padding: 20px 0;
   border-bottom: 1px solid #eee;
+  // display: flex;
+  // justify-content: space-between;
   .articleTitle {
     font-size: 18px;
     h4 {
